@@ -186,8 +186,11 @@ func main() {
 		Use:   "practice",
 		Short: "practice a password prompt",
 		Run: func(cmd *cobra.Command, args []string) {
-
 			hashes := len(vault.Hashes)
+			if hashes == 0 {
+				fmt.Println("no passwords vault.")
+				os.Exit(1)
+			}
 			selection := vault.Hashes[mrand.IntN(hashes)]
 
 			fmt.Print("Enter Password for ", selection.Label, ":")
