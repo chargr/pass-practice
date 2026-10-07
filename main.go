@@ -107,9 +107,11 @@ func command_add(vault PracticeVault, label string) error {
 
 	fmt.Print("Password: ")
 	pw, err = term.ReadPassword(int(os.Stdin.Fd()))
-	pwmatch := ph.Check(pw)
-
 	fmt.Println()
+
+	pwmatch := ph.Check(pw)
+	clear(pw)
+	pw = nil
 
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "error:", err)
