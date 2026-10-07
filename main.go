@@ -63,10 +63,6 @@ func (v *PracticeVault) RemoveUUID(id uuid.UUID) {
 	v.Hashes = slices.DeleteFunc(v.Hashes, func(h *PasswordHash) bool { return h.UUID.Compare(id) == 0 })
 }
 
-func (v *PracticeVault) RemoveLabel(label string) {
-	v.Hashes = slices.DeleteFunc(v.Hashes, func(h *PasswordHash) bool { return h.Label == label })
-}
-
 func generate_hash(password []byte, salt []byte) []byte {
 	return argon2.IDKey(password, salt, 2, 512*1024, 4, 32)
 }
@@ -254,12 +250,8 @@ func main() {
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			val := args[0]
-			id, err := uuid.Parse(val)
-			if err == nil {
-				vault.RemoveUUID(id)
-			} else {
-				vault.RemoveLabel(val)
-			}
+			hash := vault.Find(val)
+			vault.RemoveUUID(hash.UUID)
 			vault.Save(vaultpath)
 		},
 	}
