@@ -228,7 +228,7 @@ func main() {
 				selection = vault.Hashes[mrand.IntN(hashes)]
 			}
 
-			fmt.Print("Enter Password for ", selection.Label, ":")
+			fmt.Print("Enter Password for ", selection.Label, ": ")
 			pw, err := term.ReadPassword(int(os.Stdin.Fd()))
 			fmt.Println()
 
