@@ -5,7 +5,9 @@ import (
 	"crypto/subtle"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
+	"io/fs"
 	mrand "math/rand/v2"
 	"os"
 	"path/filepath"
@@ -136,7 +138,19 @@ func command_add(vault PracticeVault, label string) error {
 
 func main() {
 
-	vault := LoadVault("store.json")
+	var vault *PracticeVault
+	var vaultpath string = "practice-vault.json"
+
+	_, err := os.Stat(vaultpath)
+
+	switch {
+	case err == nil:
+		vault = LoadVault(vaultpath)
+	case errors.Is(err, fs.ErrNotExist):
+		vault = NewPracticeVault()
+	default:
+		fmt.Println("Unable to open ", vaultpath)
+	}
 
 	root := &cobra.Command{
 		Use:   filepath.Base(os.Args[0]),
