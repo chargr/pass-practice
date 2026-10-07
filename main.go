@@ -161,13 +161,14 @@ func userDataDir() (string, error) {
 
 func main() {
 
-	var vault *PracticeVault
 	userdata, err := userDataDir()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+
 	var vaultpath string = filepath.Join(userdata, "practice-vault.json")
+	var vault *PracticeVault
 
 	switch _, err := os.Stat(vaultpath); {
 	case err == nil:
