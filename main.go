@@ -209,5 +209,7 @@ func main() {
 	}
 
 	root.AddCommand(add, list, practice, del)
+	// run a default practice if no commands
+	root.Run = practice.Run
 	root.Execute()
 }
