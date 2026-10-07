@@ -9,6 +9,7 @@ import (
 	mrand "math/rand/v2"
 	"os"
 	"path/filepath"
+	"slices"
 	"uuid"
 
 	"github.com/spf13/cobra"
@@ -44,6 +45,10 @@ func LoadVault(path string) *PracticeVault {
 
 func (v *PracticeVault) Add(hash *PasswordHash) {
 	v.Hashes = append(v.Hashes, hash)
+}
+
+func (v *PracticeVault) Remove(id string) {
+	v.Hashes = slices.DeleteFunc(v.Hashes, func(h *PasswordHash) bool { return h.UUID.String() == id })
 }
 
 func generate_hash(password []byte, salt []byte) []byte {
@@ -192,6 +197,17 @@ func main() {
 		},
 	}
 
-	root.AddCommand(add, list, practice)
+	del := &cobra.Command{
+		Use:   "del <uuid>",
+		Short: "delete a passphrase by uuid",
+		Args:  cobra.ExactArgs(1),
+		Run: func(cmd *cobra.Command, args []string) {
+			id := args[0]
+			vault.Remove(id)
+			vault.Save()
+		},
+	}
+
+	root.AddCommand(add, list, practice, del)
 	root.Execute()
 }
