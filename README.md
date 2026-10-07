@@ -37,5 +37,7 @@ Practice a specific password:
 ## Password Storage
 Passwords are NOT stored and only Argon2 hashes with unique salts are stored in user local data.
 
+`~/.local/share/practice-vault.json` on linux by default.
+
 Still take the necessary precautions to protect your file.
 
