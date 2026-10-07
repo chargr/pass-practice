@@ -1,4 +1,4 @@
-module github.com/chargr/passphrase-practice
+module github.com/chargr/pass-practice
 
 go 1.27.1
 
