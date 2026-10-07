@@ -7,29 +7,29 @@ Use a hardware key everyday? Have a passphrase for emergencies?  Cant rely on a 
 Written in go because I wanted to learn go.
 
 ## Usage
-Add a new password:
+Add a new password
 ```
 ./pass-practice add account1
 Password:
 Confirm:
 ```
 
-List passwords:
+List passwords
 ```
 ./pass-practice list
 ```
 
-Remove a password from practice:
+Remove a password from vault
 ```
 ./pass-practice del account1
 ```
 
-Practice a random password:
+Practice a random password from vault
 ```
 ./pass-practice
 ```
 
-Practice a specific password:
+Practice a specific password
 ```
 ./pass-practice practice account1
 ```
