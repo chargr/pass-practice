@@ -34,6 +34,12 @@ Practice a specific password
 ./pass-practice practice account1
 ```
 
+## Building
+Requires `go`
+```
+make
+```
+
 ## Password Storage
 Passwords are NOT stored and only Argon2 hashes with unique salts are stored in user local data.
 
