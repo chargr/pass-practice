@@ -28,10 +28,9 @@ func NewPracticeVault() *PracticeVault {
 	return &PracticeVault{hashes}
 }
 
-func (v *PracticeVault) Save() error {
+func (v *PracticeVault) Save(vaultpath string) error {
 	data, _ := json.MarshalIndent(v, "", "\t")
-
-	err := os.WriteFile("store.json", data, 0600)
+	err := os.WriteFile(vaultpath, data, 0600)
 	if err != nil {
 		return err
 	}
@@ -92,7 +91,7 @@ func (ph *PasswordHash) String() string {
 	return "salt:" + strsalt + " hash:" + strhash
 }
 
-func command_add(vault PracticeVault, label string) error {
+func command_add(vault *PracticeVault, label string) error {
 
 	//vault := NewPracticeVault()
 
@@ -130,7 +129,6 @@ func command_add(vault PracticeVault, label string) error {
 		fmt.Println("Password do not match")
 	} else {
 		vault.Add(ph)
-		vault.Save()
 	}
 
 	return nil
@@ -178,7 +176,8 @@ func main() {
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			label := args[0]
-			command_add(*vault, label)
+			command_add(vault, label)
+			vault.Save(vaultpath)
 		},
 	}
 
