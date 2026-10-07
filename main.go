@@ -11,6 +11,7 @@ import (
 	mrand "math/rand/v2"
 	"os"
 	"path/filepath"
+	"runtime"
 	"slices"
 	"uuid"
 
@@ -134,14 +135,35 @@ func command_add(vault *PracticeVault, label string) error {
 	return nil
 }
 
+func userDataDir() (string, error) {
+	if dir := os.Getenv("XDG_DATA_HOME"); dir != "" {
+		return dir, nil
+	}
+	home, err := os.UserHomeDir()
+	if err != nil {
+		return "", err
+	}
+	switch runtime.GOOS {
+	case "darwin":
+		return filepath.Join(home, "Library", "Application Support"), nil
+	case "windows":
+		return os.Getenv("LOCALAPPDATA"), nil
+	default:
+		return filepath.Join(home, ".local", "share"), nil
+	}
+}
+
 func main() {
 
 	var vault *PracticeVault
-	var vaultpath string = "practice-vault.json"
+	userdata, err := userDataDir()
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	var vaultpath string = filepath.Join(userdata, "practice-vault.json")
 
-	_, err := os.Stat(vaultpath)
-
-	switch {
+	switch _, err := os.Stat(vaultpath); {
 	case err == nil:
 		vault = LoadVault(vaultpath)
 	case errors.Is(err, fs.ErrNotExist):
