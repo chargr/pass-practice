@@ -231,8 +231,8 @@ func main() {
 	}
 
 	del := &cobra.Command{
-		Use:   "del <uuid>",
-		Short: "delete a passphrase by uuid",
+		Use:   "del <uuid|label>",
+		Short: "delete a passphrase by uuid or label",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			val := args[0]
