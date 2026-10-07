@@ -219,6 +219,10 @@ func main() {
 			var selection *PasswordHash
 			if len(args) >= 1 {
 				selection = vault.Find(args[0])
+				if selection == nil {
+					fmt.Println(args[0], "not found")
+					os.Exit(1)
+				}
 			} else {
 				selection = vault.Hashes[mrand.IntN(hashes)]
 			}
@@ -251,6 +255,10 @@ func main() {
 		Run: func(cmd *cobra.Command, args []string) {
 			val := args[0]
 			hash := vault.Find(val)
+			if hash == nil {
+				fmt.Println(val, "not found")
+				os.Exit(1)
+			}
 			vault.RemoveUUID(hash.UUID)
 			vault.Save(vaultpath)
 		},
