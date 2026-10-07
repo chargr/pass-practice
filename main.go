@@ -97,8 +97,6 @@ func (ph *PasswordHash) String() string {
 
 func command_add(vault *PracticeVault, label string) error {
 
-	//vault := NewPracticeVault()
-
 	fmt.Print("Password: ")
 	pw, err := term.ReadPassword(int(os.Stdin.Fd()))
 	fmt.Println()
@@ -158,12 +156,7 @@ func main() {
 		Use:   filepath.Base(os.Args[0]),
 		Short: "Practice your passphrase",
 	}
-	/**
-	init := &cobra.Command{
-		Use:   "init",
-		Short: "initialize practice vault",
-	}
-	*/
+
 	list := &cobra.Command{
 		Use:   "list",
 		Short: "list configured passphrases",
