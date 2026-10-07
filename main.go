@@ -102,15 +102,14 @@ func (ph *PasswordHash) String() string {
 	return "salt:" + strsalt + " hash:" + strhash
 }
 
-func command_add(vault *PracticeVault, label string) error {
+func readNewPasswordHash(label string) (*PasswordHash, error) {
 
 	fmt.Print("Password: ")
 	pw, err := term.ReadPassword(int(os.Stdin.Fd()))
 	fmt.Println()
 
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
+		return nil, err
 	}
 
 	ph := NewPasswordHash(label, pw)
@@ -128,17 +127,14 @@ func command_add(vault *PracticeVault, label string) error {
 	pw = nil
 
 	if err != nil {
-		fmt.Fprintln(os.Stderr, "error:", err)
-		os.Exit(1)
+		return nil, err
 	}
 
 	if !pwmatch {
-		fmt.Println("Password do not match")
-	} else {
-		vault.Add(ph)
+		return nil, fmt.Errorf("Passwords do not match")
 	}
 
-	return nil
+	return ph, nil
 }
 
 func userDataDir() (string, error) {
@@ -200,7 +196,12 @@ func main() {
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			label := args[0]
-			command_add(vault, label)
+			hash, err := readNewPasswordHash(label)
+			if err != nil {
+				fmt.Println(err)
+				os.Exit(1)
+			}
+			vault.Add(hash)
 			vault.Save(vaultpath)
 		},
 	}
