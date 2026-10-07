@@ -49,6 +49,16 @@ func (v *PracticeVault) Add(hash *PasswordHash) {
 	v.Hashes = append(v.Hashes, hash)
 }
 
+// return the first matching uuid or label found
+func (v *PracticeVault) Find(ref string) *PasswordHash {
+	for _, h := range v.Hashes {
+		if h.UUID.String() == ref || h.Label == ref {
+			return h
+		}
+	}
+	return nil
+}
+
 func (v *PracticeVault) RemoveUUID(id uuid.UUID) {
 	v.Hashes = slices.DeleteFunc(v.Hashes, func(h *PasswordHash) bool { return h.UUID.Compare(id) == 0 })
 }
@@ -199,15 +209,23 @@ func main() {
 	}
 
 	practice := &cobra.Command{
-		Use:   "practice",
+		Use:   "practice [uuid|label]",
 		Short: "practice a password prompt",
+		Args:  cobra.MaximumNArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			hashes := len(vault.Hashes)
 			if hashes == 0 {
 				fmt.Println("no passwords vault.")
 				os.Exit(1)
 			}
-			selection := vault.Hashes[mrand.IntN(hashes)]
+
+			// optional arg for specific practice
+			var selection *PasswordHash
+			if len(args) >= 1 {
+				selection = vault.Find(args[0])
+			} else {
+				selection = vault.Hashes[mrand.IntN(hashes)]
+			}
 
 			fmt.Print("Enter Password for ", selection.Label, ":")
 			pw, err := term.ReadPassword(int(os.Stdin.Fd()))
