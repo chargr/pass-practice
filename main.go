@@ -48,8 +48,12 @@ func (v *PracticeVault) Add(hash *PasswordHash) {
 	v.Hashes = append(v.Hashes, hash)
 }
 
-func (v *PracticeVault) Remove(id string) {
-	v.Hashes = slices.DeleteFunc(v.Hashes, func(h *PasswordHash) bool { return h.UUID.String() == id })
+func (v *PracticeVault) RemoveUUID(id uuid.UUID) {
+	v.Hashes = slices.DeleteFunc(v.Hashes, func(h *PasswordHash) bool { return h.UUID.Compare(id) == 0 })
+}
+
+func (v *PracticeVault) RemoveLabel(label string) {
+	v.Hashes = slices.DeleteFunc(v.Hashes, func(h *PasswordHash) bool { return h.Label == label })
 }
 
 func generate_hash(password []byte, salt []byte) []byte {
@@ -218,9 +222,14 @@ func main() {
 		Short: "delete a passphrase by uuid",
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
-			id := args[0]
-			vault.Remove(id)
-			vault.Save()
+			val := args[0]
+			id, err := uuid.Parse(val)
+			if err == nil {
+				vault.RemoveUUID(id)
+			} else {
+				vault.RemoveLabel(val)
+			}
+			vault.Save(vaultpath)
 		},
 	}
 
