@@ -112,7 +112,7 @@ func command_add(vault *PracticeVault, label string) error {
 	clear(pw)
 	pw = nil
 
-	fmt.Print("Confirm:  ")
+	fmt.Print("Confirm: ")
 	pw, err = term.ReadPassword(int(os.Stdin.Fd()))
 	fmt.Println()
 
