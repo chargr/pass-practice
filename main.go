@@ -196,6 +196,11 @@ func main() {
 		Args:  cobra.ExactArgs(1),
 		Run: func(cmd *cobra.Command, args []string) {
 			label := args[0]
+			conflict := vault.Find(label)
+			if conflict != nil {
+				fmt.Println(label, "already exists")
+				os.Exit(1)
+			}
 			hash, err := readNewPasswordHash(label)
 			if err != nil {
 				fmt.Println(err)
