@@ -2,7 +2,7 @@
 
 Use a hardware key everyday? Have a passphrase for emergencies?  Cant rely on a password vault or a securely stored hard copy?
 
-`pass-practice` is a small CLI prompt to help commit passphrases to long term memory by "safely" practicing them without creating unecessary sessions on the services they protect.
+`pass-practice` is a small CLI prompt to help commit passphrases to long term memory by "safely" practicing them without creating unnecessary sessions on the services they protect.
 
 Written in go because I wanted to learn go.
 
