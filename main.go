@@ -48,6 +48,36 @@ func readNewPasswordHash(label string) (*PasswordHash, error) {
 	return ph, nil
 }
 
+func practicePrompt(hash *PasswordHash) bool {
+	var attempts int = 3
+
+	for range attempts {
+
+		fmt.Print("Enter Password for ", hash.Label, ": ")
+		pw, err := term.ReadPassword(int(os.Stdin.Fd()))
+		fmt.Println()
+
+		check := hash.Check(pw)
+		clear(pw)
+		pw = nil
+
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "error:", err)
+			os.Exit(1)
+		}
+
+		if check {
+			fmt.Println("Password match")
+			return true
+		} else {
+			fmt.Println("FAILURE!")
+		}
+
+	}
+
+	return false
+}
+
 func userDataDir() (string, error) {
 	if dir := os.Getenv("XDG_DATA_HOME"); dir != "" {
 		return dir, nil
@@ -145,23 +175,9 @@ func main() {
 				selection = vault.Hashes[mrand.IntN(hashes)]
 			}
 
-			fmt.Print("Enter Password for ", selection.Label, ": ")
-			pw, err := term.ReadPassword(int(os.Stdin.Fd()))
-			fmt.Println()
-
-			check := selection.Check(pw)
-			clear(pw)
-			pw = nil
-
-			if err != nil {
-				fmt.Fprintln(os.Stderr, "error:", err)
+			success := practicePrompt(selection)
+			if !success {
 				os.Exit(1)
-			}
-
-			if check {
-				fmt.Println("Password match")
-			} else {
-				fmt.Println("FAILURE!")
 			}
 		},
 	}
