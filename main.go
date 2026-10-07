@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	mrand "math/rand/v2"
 	"os"
 	"path/filepath"
 	"uuid"
@@ -162,6 +163,35 @@ func main() {
 		},
 	}
 
-	root.AddCommand(add, list)
+	practice := &cobra.Command{
+		Use:   "practice",
+		Short: "practice a password prompt",
+		Run: func(cmd *cobra.Command, args []string) {
+
+			hashes := len(vault.Hashes)
+			selection := vault.Hashes[mrand.IntN(hashes)]
+
+			fmt.Print("Enter Password for ", selection.Label, ":")
+			pw, err := term.ReadPassword(int(os.Stdin.Fd()))
+			fmt.Println()
+
+			check := selection.Check(pw)
+			clear(pw)
+			pw = nil
+
+			if err != nil {
+				fmt.Fprintln(os.Stderr, "error:", err)
+				os.Exit(1)
+			}
+
+			if check {
+				fmt.Println("Password match")
+			} else {
+				fmt.Println("FAILURE!")
+			}
+		},
+	}
+
+	root.AddCommand(add, list, practice)
 	root.Execute()
 }
