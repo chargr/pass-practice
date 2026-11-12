@@ -203,5 +203,10 @@ func main() {
 	root.AddCommand(add, list, practice, del)
 	// run a default practice if no commands
 	root.Run = practice.Run
-	root.Execute()
+	err = root.Execute()
+
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "error:", err)
+		os.Exit(1)
+	}
 }
