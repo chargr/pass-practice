@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"os"
+	"path/filepath"
 	"slices"
 	"uuid"
 )
@@ -27,8 +28,8 @@ func (v *PracticeVault) Save(vaultpath string) error {
 
 func LoadVault(path string) *PracticeVault {
 	var v PracticeVault
-	data, _ := os.ReadFile(path)
-	json.Unmarshal(data, &v)
+	data, _ := os.ReadFile(filepath.Clean(path))
+	_ = json.Unmarshal(data, &v)
 	return &v
 }
 
