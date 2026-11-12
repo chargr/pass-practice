@@ -1,0 +1,39 @@
+stages:
+  - image
+  - check
+  - build
+
+default:
+  image: $CI_REGISTRY_IMAGE/ci-build:latest
+
+build-ci:
+  stage: image
+  tags: [docker-build]
+  variables:
+    BUILDX_NO_DEFAULT_ATTESTATIONS: 1
+  before_script:
+    - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+  script:
+    - docker buildx build --pull -t $CI_REGISTRY_IMAGE/ci-build:latest ci/
+    - docker push $CI_REGISTRY_IMAGE/ci-build:latest
+  rules:
+    - changes: [ "ci/**/*" ]
+
+check-sec:
+  stage: check
+  script:
+  - gosec ./...
+
+check-vuln:
+  stage: check
+  script:
+  - govulncheck -show verbose ./...
+
+
+build:
+  stage: build
+  script:
+  - make
+  artifacts:
+    paths:
+      - "pass-practice"
