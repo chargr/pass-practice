@@ -1,10 +1,11 @@
 package main
 
 import (
+	"crypto/rand"
 	"errors"
 	"fmt"
 	"io/fs"
-	mrand "math/rand/v2"
+	"math/big"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -172,7 +173,8 @@ func main() {
 					os.Exit(1)
 				}
 			} else {
-				selection = vault.Hashes[mrand.IntN(hashes)]
+				h, _ := rand.Int(rand.Reader, big.NewInt(int64(hashes)))
+				selection = vault.Hashes[h.Int64()]
 			}
 
 			success := practicePrompt(selection)
