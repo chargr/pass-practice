@@ -149,7 +149,7 @@ func main() {
 				os.Exit(1)
 			}
 			vault.Add(hash)
-			vault.Save(vaultpath)
+			_ = vault.Save(vaultpath)
 		},
 	}
 
@@ -196,7 +196,7 @@ func main() {
 				os.Exit(1)
 			}
 			vault.RemoveUUID(hash.UUID)
-			vault.Save(vaultpath)
+			_ = vault.Save(vaultpath)
 		},
 	}
 
