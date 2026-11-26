@@ -11,11 +11,15 @@ build-ci:
   tags: [docker-build]
   variables:
     BUILDX_NO_DEFAULT_ATTESTATIONS: 1
+    DOCKER_CONFIG: $CI_PROJECT_DIR/.docker-$CI_JOB_ID
   before_script:
+    - install -d "$DOCKER_CONFIG"
     - echo "$CI_REGISTRY_PASSWORD" | docker login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
   script:
     - docker buildx build --pull -t $CI_REGISTRY_IMAGE/ci-build:latest ci/
     - docker push $CI_REGISTRY_IMAGE/ci-build:latest
+  after_script:
+    - rm -fr "$DOCKER_CONFIG"
   rules:
     - changes: [ "ci/**/*" ]
 
